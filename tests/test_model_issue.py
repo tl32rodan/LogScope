@@ -1,26 +1,26 @@
 import unittest
 from pathlib import Path
 
-from logscope.model.issue import Issue
+from logscope.model.issue import Issue, LogEntry
 
 
 class IssueModelTest(unittest.TestCase):
-    def test_to_dict_contains_all_fields(self):
+    def test_to_dict_contains_all_fields_and_logs(self):
         issue = Issue(
-            file_path=Path("/tmp/log.txt"),
-            line_number=10,
-            message="Error occurred",
             rule_pattern="ERROR",
             owner="team-a",
             action="investigate",
             category="runtime",
             description="Runtime error",
         )
+        issue.add_log(LogEntry(Path("/tmp/log.txt"), 10, "Error occurred"))
+        issue.add_log(LogEntry(Path("/tmp/other.log"), 20, "Another error"))
         result = issue.to_dict()
-        self.assertEqual(result["file_path"], str(issue.file_path))
-        self.assertEqual(result["line_number"], 10)
         self.assertEqual(result["category"], "runtime")
         self.assertEqual(result["description"], "Runtime error")
+        self.assertEqual(result["count"], 2)
+        self.assertEqual(result["logs"][0]["file_path"], "/tmp/log.txt")
+        self.assertEqual(result["logs"][1]["message"], "Another error")
 
 
 if __name__ == "__main__":

@@ -1,4 +1,4 @@
-from typing import Iterable, List
+from typing import Dict, Iterable, List
 
 from logscope.model.issue import Issue
 
@@ -11,6 +11,9 @@ class SummaryTable:
 
     def to_rows(self) -> List[dict]:
         return list(self.rows)
+
+    def to_mapping(self) -> Dict[str, List[dict]]:
+        return {"issues": self.to_rows()}
 
     def __len__(self) -> int:
         return len(self.rows)

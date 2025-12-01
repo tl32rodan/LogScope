@@ -13,15 +13,17 @@ class RegexEngineTest(unittest.TestCase):
     def test_engine_matches_lines(self):
         lines = [LogLine(Path("/tmp/log"), 1, "[ERROR] failed"), LogLine(Path("/tmp/log"), 2, "ok")]
         engine = RegexEngine(self.rules)
-        issues = list(engine.match(lines))
+        issues = engine.match(lines)
         self.assertEqual(len(issues), 1)
-        self.assertEqual(issues[0].line_number, 1)
+        self.assertEqual(len(issues[0].logs), 1)
 
     def test_match_rules_helper(self):
-        lines = [LogLine(Path("/tmp/log"), 1, "[ERROR] failed")]
+        lines = [LogLine(Path("/tmp/log"), 1, "[ERROR] failed"), LogLine(Path("/tmp/log"), 3, "[ERROR] again")]
         issues = match_rules(lines, self.rules)
         self.assertEqual(len(issues), 1)
         self.assertEqual(issues[0].owner, "team-a")
+        self.assertEqual(len(issues[0].logs), 2)
+        self.assertEqual(issues[0].to_dict()["count"], 2)
 
 
 if __name__ == "__main__":

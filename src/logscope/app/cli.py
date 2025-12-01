@@ -1,29 +1,75 @@
 import argparse
+import json
 from pathlib import Path
 
-from logscope.app.runner import run_pipeline
+from logscope.app.runner import ConfigBundle, run_application
+from logscope.integrations.cassandra_client import (
+    CassandraIssueStore,
+    CassandraUnavailable,
+    InMemoryIssueStore,
+)
+from logscope.app.gui import launch_gui
 
 
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description="LogScope pipeline runner")
-    parser.add_argument("log_root", type=Path, help="Root directory containing logs")
-    parser.add_argument("config", type=Path, help="CSV file containing rules")
-    parser.add_argument("output", type=Path, help="Output CSV path for summary table")
     parser.add_argument(
-        "--pattern",
-        action="append",
-        dest="patterns",
+        "config_map",
+        type=Path,
+        help="JSON file describing configs (list of {name, config, log_root, patterns})",
+    )
+    parser.add_argument(
+        "--cassandra-hosts",
+        type=str,
         default=None,
-        help="Glob pattern for log files (can be provided multiple times). Default: **/*.log",
+        help="Comma-separated Cassandra hosts. If omitted, an in-memory store is used.",
+    )
+    parser.add_argument("--cassandra-keyspace", type=str, default="logscope")
+    parser.add_argument("--cassandra-table", type=str, default="issues")
+    parser.add_argument(
+        "--launch-gui",
+        action="store_true",
+        help="Launch PySide2 GUI to view current and historical issues",
     )
     return parser
+
+
+def load_bundles(config_map_path: Path):
+    data = json.loads(config_map_path.read_text())
+    bundles = []
+    for entry in data:
+        patterns = entry.get("patterns") or ["**/*.log"]
+        bundles.append(
+            ConfigBundle(
+                name=entry["name"],
+                config_path=Path(entry["config"]),
+                log_root=Path(entry["log_root"]),
+                patterns=patterns,
+            )
+        )
+    return bundles
 
 
 def main(argv=None) -> int:
     parser = build_parser()
     args = parser.parse_args(argv)
-    patterns = args.patterns if args.patterns is not None else ["**/*.log"]
-    run_pipeline(args.log_root, args.config, args.output, patterns)
+    bundles = load_bundles(args.config_map)
+
+    if args.cassandra_hosts:
+        hosts = [host.strip() for host in args.cassandra_hosts.split(",") if host.strip()]
+        try:
+            store = CassandraIssueStore(hosts, args.cassandra_keyspace, args.cassandra_table)
+        except CassandraUnavailable as exc:
+            parser.error(str(exc))
+    else:
+        store = InMemoryIssueStore()
+
+    summaries = run_application(bundles, store)
+
+    if args.launch_gui:
+        current = {name: summary.to_rows() for name, summary in summaries.items()}
+        history = store.fetch()
+        launch_gui(current, history)
     return 0
 
 
