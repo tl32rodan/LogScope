@@ -10,14 +10,14 @@ of issues. A single issue can aggregate multiple log entries and is exported as 
 - `src/logscope/collector`: File discovery and log reading utilities.
 - `src/logscope/matcher`: Regex engine and filters.
 - `src/logscope/reporter`: Summary table builder and JSON export.
-- `src/logscope/app`: Pipeline runner, multi-config application runner, CLI entrypoint, and optional PySide2 GUI launcher.
+- `src/logscope/app`: Pipeline runner, multi-config application runner, CLI entrypoint.
 - `src/logscope/integrations`: External adapters (e.g., Cassandra issue store).
 - `tests`: Unit tests for each module.
 
 ## Quickstart
 
 1. Create a CSV rules file (headers: `pattern,owner,action,description,category`) and place your log files under a root directory.
-2. Define a JSON config map describing the log roots and configs to process, for example:
+2. Define a JSON config map describing the log roots and configs to process, for example (see `example/config.json`):
 
 ```json
 [
@@ -37,7 +37,20 @@ PYTHONPATH=src python -m logscope.app.cli config.json
 ```
 
 If `--cassandra-hosts` is provided, issues are persisted via the existing Cassandra cluster; otherwise an in-memory store is used.
-Use `--launch-gui` to open a PySide2-based summary view that combines current results with historical Cassandra records.
+
+### End-to-end demo
+
+An executable example is provided under `example/`:
+
+```bash
+# From the repo root
+PYTHONPATH=src python -m logscope.app.cli example/config.json
+
+# The command generates ./example/logs/demo_summary.json
+cat example/logs/demo_summary.json | python -m json.tool
+```
+
+The sample rules aggregate two matching log lines into a single issue keyed by the regex rule, demonstrating multi-line issue collection and JSON output.
 
 ## Testing
 

@@ -9,7 +9,7 @@ class CliTest(unittest.TestCase):
     def test_build_parser_defaults(self):
         parser = build_parser()
         args = parser.parse_args(["/configs.json"])
-        self.assertFalse(args.launch_gui)
+        self.assertIsNone(args.cassandra_hosts)
 
     def test_main_runs_pipeline(self):
         with tempfile.TemporaryDirectory() as tmp:

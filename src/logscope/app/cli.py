@@ -8,7 +8,6 @@ from logscope.integrations.cassandra_client import (
     CassandraUnavailable,
     InMemoryIssueStore,
 )
-from logscope.app.gui import launch_gui
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -26,11 +25,6 @@ def build_parser() -> argparse.ArgumentParser:
     )
     parser.add_argument("--cassandra-keyspace", type=str, default="logscope")
     parser.add_argument("--cassandra-table", type=str, default="issues")
-    parser.add_argument(
-        "--launch-gui",
-        action="store_true",
-        help="Launch PySide2 GUI to view current and historical issues",
-    )
     return parser
 
 
@@ -65,11 +59,6 @@ def main(argv=None) -> int:
         store = InMemoryIssueStore()
 
     summaries = run_application(bundles, store)
-
-    if args.launch_gui:
-        current = {name: summary.to_rows() for name, summary in summaries.items()}
-        history = store.fetch()
-        launch_gui(current, history)
     return 0
 
 
