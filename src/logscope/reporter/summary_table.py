@@ -13,7 +13,7 @@ class SummaryTable:
         return list(self.rows)
 
     def to_mapping(self) -> Dict[str, List[dict]]:
-        return {"issues": self.to_rows()}
+        return {"rules": self.to_rows()}
 
     def __len__(self) -> int:
         return len(self.rows)

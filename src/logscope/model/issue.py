@@ -1,6 +1,6 @@
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import List, Optional
+from typing import Optional, Set
 
 
 @dataclass
@@ -8,14 +8,6 @@ class LogEntry:
     file_path: Path
     line_number: int
     message: str
-
-    def to_dict(self) -> dict:
-        return {
-            "file_path": str(self.file_path),
-            "line_number": self.line_number,
-            "message": self.message,
-        }
-
 
 @dataclass
 class Issue:
@@ -26,10 +18,15 @@ class Issue:
     action: str
     category: Optional[str] = None
     description: Optional[str] = None
-    logs: List[LogEntry] = field(default_factory=list)
+    log_files: Set[Path] = field(default_factory=set)
+    first_message: Optional[str] = None
+    count: int = 0
 
     def add_log(self, entry: LogEntry) -> None:
-        self.logs.append(entry)
+        if self.first_message is None:
+            self.first_message = entry.message
+        self.log_files.add(entry.file_path)
+        self.count += 1
 
     def to_dict(self) -> dict:
         """Return a dictionary representation useful for reporting."""
@@ -39,6 +36,7 @@ class Issue:
             "action": self.action,
             "category": self.category or "",
             "description": self.description or "",
-            "logs": [entry.to_dict() for entry in self.logs],
-            "count": len(self.logs),
+            "log_files": sorted(str(path) for path in self.log_files),
+            "sample_message": self.first_message or "",
+            "count": self.count,
         }

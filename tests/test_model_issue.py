@@ -19,8 +19,8 @@ class IssueModelTest(unittest.TestCase):
         self.assertEqual(result["category"], "runtime")
         self.assertEqual(result["description"], "Runtime error")
         self.assertEqual(result["count"], 2)
-        self.assertEqual(result["logs"][0]["file_path"], "/tmp/log.txt")
-        self.assertEqual(result["logs"][1]["message"], "Another error")
+        self.assertEqual(result["log_files"], ["/tmp/log.txt", "/tmp/other.log"])
+        self.assertEqual(result["sample_message"], "Error occurred")
 
 
 if __name__ == "__main__":

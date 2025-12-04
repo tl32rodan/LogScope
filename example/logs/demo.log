@@ -1,0 +1,4 @@
+2024-05-10 10:00:00,001 INFO Starting service
+2024-05-10 10:00:01,150 ERROR ZX81 Failed to connect to database
+2024-05-10 10:00:02,310 ERROR ZX81 Retrying connection
+2024-05-10 10:00:03,500 INFO Service running
