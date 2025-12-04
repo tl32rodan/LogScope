@@ -52,6 +52,17 @@ cat example/logs/demo_summary.json | python -m json.tool
 
 The sample rules aggregate two matching log lines into a single issue keyed by the regex rule, demonstrating multi-line issue collection and JSON output.
 
+Sample logs for the demo live at `example/logs/demo.log` and include two matching `ERROR` entries along with surrounding context to exercise the rule in `example/rules.csv`.
+
+## Makefile shortcuts
+
+Common tasks are available via `make`:
+
+```bash
+make run   # Execute the demo pipeline defined in example/config.json using the repository's Python
+make test  # Run the full unittest suite
+```
+
 ## Testing
 
 ```bash
