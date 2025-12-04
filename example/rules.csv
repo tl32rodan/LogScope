@@ -1,0 +1,2 @@
+pattern,owner,action,description,category
+ERROR (?P<code>\w+),platform,investigate,"Capture error code from logs",runtime
