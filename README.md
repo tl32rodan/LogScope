@@ -14,13 +14,6 @@ of issues. A single issue can aggregate multiple log entries and is exported as 
 - `src/logscope/integrations`: External adapters (e.g., Cassandra issue store).
 - `tests`: Unit tests for each module.
 
-## Design analysis (responsibility & SOLID alignment)
-
-- **Single responsibility & clear boundaries**: Each package owns one concern—`config` only loads/validates rule definitions, `collector` only finds/streams log lines, `matcher` only applies rules and filtering, `reporter` only shapes results for export, and `integrations` isolates external systems (e.g., Cassandra). Domain models in `model` stay data-only and avoid IO.
-- **Open/closed for extensions**: Rule loading, storage backends, and filters are pluggable. For example, adding a YAML loader, new filters, or a different persistence layer does not change the matcher or reporter code paths.
-- **Dependency direction**: Application code (`app`) orchestrates the lower layers without inverting dependencies; lower layers avoid depending on application wiring. External adapters live behind interfaces to keep the core pipeline testable.
-- **TDD support**: Every module has dedicated unit tests under `tests/`, and the pipeline is exercised end-to-end through the CLI tests to protect integration behavior.
-
 ## Quickstart
 
 1. Create a CSV rules file (headers: `pattern,owner,action,description,category`) and place your log files under a root directory.
