@@ -44,7 +44,11 @@ An executable example is provided under `example/`:
 
 ```bash
 # From the repo root
-PYTHONPATH=src python -m logscope.app.cli example/config.json
+# Defaults to example/config.json but can forward any CLI options
+make run
+
+# Override the config or add Cassandra flags if needed
+make run RUN_ARGS="example/config.json --cassandra-hosts=127.0.0.1"
 
 # The command generates ./example/logs/demo_summary.json
 cat example/logs/demo_summary.json | python -m json.tool
@@ -58,38 +62,30 @@ Example JSON summary output:
 {
   "rules": [
     {
-      "rule_pattern": "ERROR",
-      "owner": "team-a",
+      "rule_pattern": "ERROR (?P<code>\\w+)",
+      "owner": "platform",
       "action": "investigate",
       "category": "runtime",
-      "description": "Runtime error",
-      "log_files": ["example/logs/demo.log"],
-      "sample_message": "[ERROR] database unavailable",
-      "count": 2
+      "description": "Capture error code from logs",
+      "log_files": [
+        "example/logs/demo.log",
+        "example/logs/demo2.log"
+      ],
+      "sample_message": "2024-05-10 10:00:01,150 ERROR ZX81 Failed to connect to database",
+      "count": 4
     }
   ]
 }
 ```
 
-Sample logs for the demo live at `example/logs/demo.log` and include two matching `ERROR` entries along with surrounding context to exercise the rule in `example/rules.csv`.
+Sample logs for the demo live at `example/logs/demo.log` and `example/logs/demo2.log`, illustrating how multiple files contributing similar `ERROR` entries are aggregated into a single rule driven by `example/rules.csv`.
 
 ## Makefile shortcuts
 
 Common tasks are available via `make`:
 
 ```bash
-make run   # Execute the demo pipeline defined in example/config.json using the repository's Python
-make test  # Run the full unittest suite
-```
-
-Sample logs for the demo live at `example/logs/demo.log` and include two matching `ERROR` entries along with surrounding context to exercise the rule in `example/rules.csv`.
-
-## Makefile shortcuts
-
-Common tasks are available via `make`:
-
-```bash
-make run   # Execute the demo pipeline defined in example/config.json using the repository's Python
+make run   # Execute the pipeline with RUN_ARGS (defaults to example/config.json)
 make test  # Run the full unittest suite
 ```
 

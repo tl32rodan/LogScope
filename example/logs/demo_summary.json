@@ -1,0 +1,17 @@
+{
+  "rules": [
+    {
+      "rule_pattern": "ERROR (?P<code>\\w+)",
+      "owner": "platform",
+      "action": "investigate",
+      "category": "runtime",
+      "description": "Capture error code from logs",
+      "log_files": [
+        "example/logs/demo.log",
+        "example/logs/demo2.log"
+      ],
+      "sample_message": "2024-05-10 10:00:01,150 ERROR ZX81 Failed to connect to database",
+      "count": 4
+    }
+  ]
+}

@@ -7,4 +7,4 @@ def scan_logs(root: Path, patterns: Iterable[str]) -> List[Path]:
     matched: List[Path] = []
     for pattern in patterns:
         matched.extend(root.glob(pattern))
-    return sorted({path.resolve() for path in matched if path.is_file()})
+        return sorted({path for path in matched if path.is_file()})

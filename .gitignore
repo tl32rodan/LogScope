@@ -207,4 +207,4 @@ marimo/_lsp/
 __marimo__/
 
 # Demo assets
-!example/logs/demo.log
+!example/logs/*.log
