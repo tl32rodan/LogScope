@@ -12,8 +12,9 @@ class SummaryTableTest(unittest.TestCase):
         table = SummaryTable([issue])
         rows = table.to_rows()
         self.assertEqual(len(table), 1)
-        self.assertEqual(rows[0]["logs"][0]["message"], "err")
-        self.assertEqual(table.to_mapping()["issues"][0]["count"], 1)
+        self.assertEqual(rows[0]["sample_message"], "err")
+        self.assertEqual(rows[0]["log_files"], ["/tmp/log"])
+        self.assertEqual(table.to_mapping()["rules"][0]["count"], 1)
 
 
 if __name__ == "__main__":

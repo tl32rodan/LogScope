@@ -1,7 +1,7 @@
 # LogScope
 
-LogScope is a log-driven rule engine that scans log files, applies owner-defined regular expressions, and builds a summary table
-of issues. A single issue can aggregate multiple log entries and is exported as JSON for easy downstream integration.
+LogScope is a log-driven rule engine that scans log files, applies owner-defined regular expressions, and builds a summary table of rules that matched.
+Each rule captures the log files where it appeared, alongside the first matching message as an example, and is exported as JSON for easy downstream integration.
 
 ## Project layout
 
@@ -50,7 +50,37 @@ PYTHONPATH=src python -m logscope.app.cli example/config.json
 cat example/logs/demo_summary.json | python -m json.tool
 ```
 
-The sample rules aggregate two matching log lines into a single issue keyed by the regex rule, demonstrating multi-line issue collection and JSON output.
+The sample rules aggregate matching lines into a single rule entry keyed by the regex, summarizing affected log files and the first observed message for lightweight reporting.
+
+Example JSON summary output:
+
+```json
+{
+  "rules": [
+    {
+      "rule_pattern": "ERROR",
+      "owner": "team-a",
+      "action": "investigate",
+      "category": "runtime",
+      "description": "Runtime error",
+      "log_files": ["example/logs/demo.log"],
+      "sample_message": "[ERROR] database unavailable",
+      "count": 2
+    }
+  ]
+}
+```
+
+Sample logs for the demo live at `example/logs/demo.log` and include two matching `ERROR` entries along with surrounding context to exercise the rule in `example/rules.csv`.
+
+## Makefile shortcuts
+
+Common tasks are available via `make`:
+
+```bash
+make run   # Execute the demo pipeline defined in example/config.json using the repository's Python
+make test  # Run the full unittest suite
+```
 
 Sample logs for the demo live at `example/logs/demo.log` and include two matching `ERROR` entries along with surrounding context to exercise the rule in `example/rules.csv`.
 
