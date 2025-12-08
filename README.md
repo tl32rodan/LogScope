@@ -22,7 +22,7 @@ Each rule captures the log files where it appeared, alongside the first matching
 ```json
 [
   {
-    "name": "core",
+    "id": "core",
     "config": "./rules.csv",
     "log_root": "./logs",
     "patterns": ["**/*.log"]
@@ -33,10 +33,8 @@ Each rule captures the log files where it appeared, alongside the first matching
 3. Run the pipeline via CLI:
 
 ```bash
-PYTHONPATH=src python -m logscope.app.cli config.json
+PYTHONPATH=src python -m logscope.app.cli analysis config.json ./issues
 ```
-
-If `--cassandra-hosts` is provided, issues are persisted via the existing Cassandra cluster; otherwise an in-memory store is used.
 
 ### End-to-end demo
 
@@ -44,14 +42,14 @@ An executable example is provided under `example/`:
 
 ```bash
 # From the repo root
-# Defaults to example/config.json but can forward any CLI options
+# Defaults to running the analysis subcommand with example inputs
 make run
 
-# Override the config or add Cassandra flags if needed
-make run RUN_ARGS="example/config.json --cassandra-hosts=127.0.0.1"
+# Override the config or the issue store root if needed
+make run RUN_ARGS="analysis example/config.json ./example/output"
 
-# The command generates ./example/logs/demo_summary.json
-cat example/logs/demo_summary.json | python -m json.tool
+# The command generates ./example/issues/demo/issues.json
+cat example/issues/demo/issues.json | python -m json.tool
 ```
 
 The sample rules aggregate matching lines into a single rule entry keyed by the regex, summarizing affected log files and the first observed message for lightweight reporting.

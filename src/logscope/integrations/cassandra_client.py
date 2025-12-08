@@ -54,16 +54,3 @@ class CassandraIssueStore:
         return result
 
 
-class InMemoryIssueStore:
-    """Lightweight issue store for testing and offline usage."""
-
-    def __init__(self):
-        self._storage: Dict[str, List[List[dict]]] = {}
-
-    def store(self, config_name: str, issues: List[dict]) -> None:
-        self._storage.setdefault(config_name, []).append(issues)
-
-    def fetch(self, config_name: Optional[str] = None) -> Dict[str, List[List[dict]]]:
-        if config_name is None:
-            return dict(self._storage)
-        return {config_name: list(self._storage.get(config_name, []))}
