@@ -3,7 +3,7 @@ export PYTHONPATH := src
 
 .PHONY: run test
 
-RUN_ARGS ?= example/config.json
+RUN_ARGS ?= analysis example/config.json ./example/issues
 
 run:
 	$(PYTHON) -m logscope.app.cli $(RUN_ARGS)
