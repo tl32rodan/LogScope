@@ -8,8 +8,9 @@ from logscope.app.cli import build_parser, main
 class CliTest(unittest.TestCase):
     def test_build_parser_defaults(self):
         parser = build_parser()
-        args = parser.parse_args(["/configs.json"])
-        self.assertIsNone(args.cassandra_hosts)
+        args = parser.parse_args(["analysis", "/configs.json", "/issues"])
+        self.assertEqual(args.config_map, Path("/configs.json"))
+        self.assertEqual(args.issue_store_root, Path("/issues"))
 
     def test_main_runs_pipeline(self):
         with tempfile.TemporaryDirectory() as tmp:
@@ -24,13 +25,18 @@ class CliTest(unittest.TestCase):
 
             config_map = root / "config.json"
             config_map.write_text(
-                '[{"name": "default", "config": "' + str(csv_path) + '", "log_root": "' + str(logs_dir) + '"}]',
+                '[{"id": "default", "config": "'
+                + str(csv_path)
+                + '", "log_root": "'
+                + str(logs_dir)
+                + '"}]',
                 encoding="utf-8",
             )
 
-            exit_code = main([str(config_map)])
+            store_root = root / "issues"
+            exit_code = main(["analysis", str(config_map), str(store_root)])
             self.assertEqual(exit_code, 0)
-            summary_path = logs_dir / "default_summary.json"
+            summary_path = store_root / "default" / "issues.json"
             self.assertTrue(summary_path.exists())
 
 
