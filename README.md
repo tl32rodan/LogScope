@@ -11,7 +11,7 @@ Each rule captures the log files where it appeared, alongside the first matching
 - `src/logscope/matcher`: Regex engine and filters.
 - `src/logscope/reporter`: Summary table builder and JSON export.
 - `src/logscope/app`: Pipeline runner, multi-config application runner, CLI entrypoint.
-- `src/logscope/integrations`: External adapters (e.g., Cassandra issue store).
+- `src/logscope/integrations`: External adapters (e.g., filesystem-backed issue stores).
 - `tests`: Unit tests for each module.
 
 ## Quickstart
