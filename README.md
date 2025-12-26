@@ -33,7 +33,7 @@ Each rule captures the log files where it appeared, alongside the first matching
 3. Run the pipeline via CLI:
 
 ```bash
-PYTHONPATH=src python -m logscope.app.cli analysis config.json ./issues
+PYTHONPATH=src python -m logscope analysis config.json ./issues
 ```
 
 ### End-to-end demo
