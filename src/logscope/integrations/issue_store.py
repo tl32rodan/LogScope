@@ -12,7 +12,8 @@ class InMemoryIssueStore:
         self._storage: Dict[str, List[dict]] = {}
 
     def store(self, config_id: str, issues: List[dict]) -> None:
-        self._storage[config_id] = list(issues)
+        existing = self._storage.get(config_id, [])
+        self._storage[config_id] = list(existing) + list(issues)
 
     def fetch(self, config_id: Optional[str] = None) -> Dict[str, List[dict]]:
         if config_id is None:
@@ -32,8 +33,9 @@ class JsonIssueStore:
     def store(self, config_id: str, issues: List[dict]) -> Path:
         output_path = self._issue_path(config_id)
         output_path.parent.mkdir(parents=True, exist_ok=True)
+        existing = self._load_issues(output_path)
         with output_path.open("w", encoding="utf-8") as handle:
-            json.dump({"rules": list(issues)}, handle, indent=2)
+            json.dump({"rules": list(existing) + list(issues)}, handle, indent=2)
         return output_path
 
     def fetch(self, config_id: Optional[str] = None) -> Dict[str, List[dict]]:
