@@ -1,6 +1,6 @@
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Optional, Set
+from typing import Optional, Set, Tuple
 
 
 @dataclass
@@ -20,10 +20,13 @@ class Issue:
     description: Optional[str] = None
     log_files: Set[Path] = field(default_factory=set)
     first_message: Optional[str] = None
+    _first_message_key: Optional[Tuple[str, int]] = field(default=None, init=False, repr=False)
     count: int = 0
 
     def add_log(self, entry: LogEntry) -> None:
-        if self.first_message is None:
+        entry_key = (entry.file_path.as_posix(), entry.line_number)
+        if self._first_message_key is None or entry_key < self._first_message_key:
+            self._first_message_key = entry_key
             self.first_message = entry.message
         self.log_files.add(entry.file_path)
         self.count += 1

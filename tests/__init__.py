@@ -1,7 +1,8 @@
+"""Test package marker for unittest discovery."""
+
 import sys
 from pathlib import Path
 
-# Ensure src directory is on path for imports
 ROOT = Path(__file__).resolve().parents[1]
 SRC = ROOT / "src"
 if str(SRC) not in sys.path:
