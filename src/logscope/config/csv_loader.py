@@ -1,6 +1,6 @@
 import csv
 from pathlib import Path
-from typing import Iterable, List
+from typing import Iterable, List, Optional
 
 from logscope.model.rule import Rule
 from logscope.config import schema
@@ -24,8 +24,8 @@ def load_rules_from_csv(csv_path: Path) -> List[Rule]:
                 pattern=row["pattern"],
                 owner=row["owner"],
                 action=row["action"],
-                description=row.get("description") or None,
-                category=row.get("category") or None,
+                description=_normalize_optional(row.get("description")),
+                category=_normalize_optional(row.get("category")),
             )
             rules.append(rule)
     return rules
@@ -35,3 +35,11 @@ def _ensure_required_headers(headers: Iterable[str], required_fields: Iterable[s
     missing = [field for field in required_fields if field not in headers]
     if missing:
         raise ValueError(f"Missing required headers: {', '.join(missing)}")
+
+
+def _normalize_optional(value: Optional[str]) -> Optional[str]:
+    if value is None:
+        return None
+    if isinstance(value, str) and not value.strip():
+        return None
+    return value

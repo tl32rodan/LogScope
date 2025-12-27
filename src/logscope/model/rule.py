@@ -15,4 +15,7 @@ class Rule:
 
     def compiled(self) -> Pattern[str]:
         """Return a compiled regex for this rule."""
-        return re.compile(self.pattern)
+        try:
+            return re.compile(self.pattern)
+        except re.error as exc:
+            raise ValueError(f"Invalid regex pattern '{self.pattern}': {exc}") from exc

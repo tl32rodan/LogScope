@@ -18,6 +18,11 @@ class SchemaValidationTest(unittest.TestCase):
         with self.assertRaises(ValueError):
             schema.validate_row(row)
 
+    def test_validate_row_whitespace_field_raises(self):
+        row = {"pattern": "   ", "owner": "team-a", "action": "fix"}
+        with self.assertRaises(ValueError):
+            schema.validate_row(row)
+
 
 if __name__ == "__main__":
     unittest.main()

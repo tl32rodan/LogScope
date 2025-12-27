@@ -7,7 +7,16 @@ class SummaryTable:
     """Container for issue summaries."""
 
     def __init__(self, issues: Iterable[Issue]):
-        self.rows: List[dict] = [issue.to_dict() for issue in issues]
+        self.rows: List[dict] = sorted(
+            (issue.to_dict() for issue in issues),
+            key=lambda row: (
+                row["rule_pattern"],
+                row["owner"],
+                row["action"],
+                row["category"],
+                row["description"],
+            ),
+        )
 
     def to_rows(self) -> List[dict]:
         return list(self.rows)
