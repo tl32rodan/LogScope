@@ -16,7 +16,7 @@ def build_parser() -> argparse.ArgumentParser:
     analysis.add_argument(
         "config_map",
         type=Path,
-        help="JSON file describing configs (list of {id, config, log_root, patterns})",
+        help="JSON file describing configs (list of {id, config, patterns}); patterns must be absolute",
     )
     analysis.add_argument(
         "issue_store_root",
@@ -31,11 +31,13 @@ def load_bundles(config_map_path: Path):
     bundles = []
     for entry in data:
         patterns = entry.get("patterns") or ["**/*.log"]
+        for pattern in patterns:
+            if not Path(pattern).is_absolute():
+                raise ValueError(f"Pattern must be an absolute path: {pattern}")
         bundles.append(
             ConfigBundle(
                 config_id=entry["id"],
                 config_path=Path(entry["config"]),
-                log_root=Path(entry["log_root"]),
                 patterns=patterns,
             )
         )

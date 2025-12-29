@@ -14,19 +14,17 @@ from logscope.reporter.summary_table import SummaryTable
 class ConfigBundle:
     config_id: str
     config_path: Path
-    log_root: Path
     patterns: Sequence[str]
 
 
 def run_pipeline(
-    log_root: Path,
     rule_csv_path: Path,
     patterns: Sequence[str],
     filters: Iterable = (),
 ) -> SummaryTable:
     """Execute the end-to-end pipeline from logs to summarized issues."""
     rules = load_rules_from_csv(rule_csv_path)
-    log_paths = scan_logs(log_root, patterns)
+    log_paths = scan_logs(patterns)
     log_lines = read_log_lines(log_paths)
     engine = RegexEngine(rules)
     issues = engine.match(log_lines)
@@ -45,7 +43,6 @@ def run_application(
     results: Dict[str, SummaryTable] = {}
     for bundle in bundles:
         summary = run_pipeline(
-            log_root=bundle.log_root,
             rule_csv_path=bundle.config_path,
             patterns=bundle.patterns,
             filters=filters,

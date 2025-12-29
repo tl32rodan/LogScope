@@ -14,7 +14,7 @@ class FileScannerTest(unittest.TestCase):
             (root / "nested" / "b.log").write_text("second", encoding="utf-8")
             (root / "ignore.txt").write_text("nope", encoding="utf-8")
 
-            results = scan_logs(root, ["**/*.log"])
+            results = scan_logs([str(root / "**" / "*.log")])
             self.assertEqual(len(results), 2)
             self.assertTrue(all(path.suffix == ".log" for path in results))
 
@@ -26,7 +26,7 @@ class FileScannerTest(unittest.TestCase):
             (root / "nested").mkdir()
             (root / "nested" / "c.log").write_text("third", encoding="utf-8")
 
-            results = scan_logs(root, ["**/*.log", "*.log"])
+            results = scan_logs([str(root / "**" / "*.log"), str(root / "*.log")])
             result_paths = [path.as_posix() for path in results]
 
             self.assertEqual(
@@ -34,6 +34,17 @@ class FileScannerTest(unittest.TestCase):
                 sorted(set(result_paths)),
             )
             self.assertEqual(len(result_paths), 3)
+
+    def test_scan_logs_supports_absolute_patterns(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            logs_dir = root / "logs"
+            logs_dir.mkdir()
+            (logs_dir / "app.log").write_text("line", encoding="utf-8")
+
+            results = scan_logs([str(logs_dir / "*.log")])
+
+            self.assertEqual(results, [logs_dir / "app.log"])
 
 
 if __name__ == "__main__":

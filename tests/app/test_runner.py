@@ -16,7 +16,7 @@ class RunnerTest(unittest.TestCase):
             csv_path = root / "rules.csv"
             csv_path.write_text("pattern,owner,action\nERROR,team-a,investigate\n", encoding="utf-8")
 
-            summary = run_pipeline(root, csv_path, ["**/*.log"], filters=())
+            summary = run_pipeline(csv_path, [str(root / "**" / "*.log")], filters=())
 
             self.assertEqual(len(summary), 1)
 
@@ -35,8 +35,7 @@ class RunnerTest(unittest.TestCase):
                 ConfigBundle(
                     config_id="conf-a",
                     config_path=csv_path,
-                    log_root=log_dir,
-                    patterns=["**/*.log"],
+                    patterns=[str(log_dir / "**" / "*.log")],
                 )
             ]
             store = InMemoryIssueStore()
@@ -60,8 +59,7 @@ class RunnerTest(unittest.TestCase):
                 ConfigBundle(
                     config_id="conf-a",
                     config_path=csv_path,
-                    log_root=logs_dir,
-                    patterns=["**/*.log"],
+                    patterns=[str(logs_dir / "**" / "*.log")],
                 )
             ]
 
