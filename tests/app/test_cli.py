@@ -27,9 +27,9 @@ class CliTest(unittest.TestCase):
             config_map.write_text(
                 '[{"id": "default", "config": "'
                 + str(csv_path)
-                + '", "log_root": "'
-                + str(logs_dir)
-                + '"}]',
+                + '", "patterns": ["'
+                + str(logs_dir / "*.log")
+                + '"]}]',
                 encoding="utf-8",
             )
 
@@ -38,6 +38,18 @@ class CliTest(unittest.TestCase):
             self.assertEqual(exit_code, 0)
             summary_path = store_root / "default" / "issues.json"
             self.assertTrue(summary_path.exists())
+
+    def test_load_bundles_rejects_relative_patterns(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            config_map = root / "config.json"
+            config_map.write_text(
+                '[{"id": "default", "config": "rules.csv", "patterns": ["logs/*.log"]}]',
+                encoding="utf-8",
+            )
+
+            with self.assertRaises(ValueError):
+                main(["analysis", str(config_map), str(root / "issues")])
 
 
 if __name__ == "__main__":
