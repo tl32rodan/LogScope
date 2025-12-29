@@ -2,7 +2,6 @@
   {
     "id": "demo",
     "config": "./example/rules.csv",
-    "log_root": "./example/logs",
-    "patterns": ["**/*.log"]
+    "patterns": ["/workspace/LogScope/example/logs/*.log"]
   }
 ]

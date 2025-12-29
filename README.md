@@ -16,16 +16,15 @@ Each rule captures the log files where it appeared, alongside the first matching
 
 ## Quickstart
 
-1. Create a CSV rules file (headers: `pattern,owner,action,description,category`) and place your log files under a root directory.
-2. Define a JSON config map describing the log roots and configs to process, for example (see `example/config.json`):
+1. Create a CSV rules file (headers: `pattern,owner,action,description,category`) and place your log files in a directory.
+2. Define a JSON config map describing the configs and **absolute** log patterns to process, for example (see `example/config.json`):
 
 ```json
 [
   {
     "id": "core",
     "config": "./rules.csv",
-    "log_root": "./logs",
-    "patterns": ["**/*.log"]
+    "patterns": ["/absolute/path/to/logs/*.log"]
   }
 ]
 ```
@@ -52,6 +51,12 @@ make run RUN_ARGS="analysis example/config.json ./example/output"
 cat example/issues/demo/issues.json | python -m json.tool
 ```
 
+Alternatively, run the dedicated demo target:
+
+```bash
+make demo
+```
+
 The sample rules aggregate matching lines into a single rule entry keyed by the regex, summarizing affected log files and the first observed message for lightweight reporting.
 
 Example JSON summary output:
@@ -66,8 +71,8 @@ Example JSON summary output:
       "category": "runtime",
       "description": "Capture error code from logs",
       "log_files": [
-        "example/logs/demo.log",
-        "example/logs/demo2.log"
+        "/absolute/path/to/logs/demo.log",
+        "/absolute/path/to/logs/demo2.log"
       ],
       "sample_message": "2024-05-10 10:00:01,150 ERROR ZX81 Failed to connect to database",
       "count": 4
@@ -84,6 +89,8 @@ Common tasks are available via `make`:
 
 ```bash
 make run   # Execute the pipeline with RUN_ARGS (defaults to example/config.json)
+make demo  # Run the bundled demo using the example inputs
+make clean # Clear demo outputs and test artifacts
 make test  # Run the full unittest suite
 ```
 
