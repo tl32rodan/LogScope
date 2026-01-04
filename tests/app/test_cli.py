@@ -2,7 +2,7 @@ import tempfile
 import unittest
 from pathlib import Path
 
-from logscope.app.cli import build_parser, main
+from logscope.app.cli import build_parser, load_bundles, main
 
 
 class CliTest(unittest.TestCase):
@@ -49,7 +49,7 @@ class CliTest(unittest.TestCase):
             )
 
             with self.assertRaises(ValueError):
-                main(["analysis", str(config_map), str(root / "issues")])
+                load_bundles(config_map)
 
 
 if __name__ == "__main__":
