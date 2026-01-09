@@ -15,4 +15,7 @@ def read_log_lines(paths: Iterable[Path]) -> Generator[LogLine, None, None]:
     for path in paths:
         with path.open(encoding="utf-8") as handle:
             for idx, line in enumerate(handle, start=1):
-                yield LogLine(file_path=path, line_number=idx, text=line.rstrip("\n"))
+                text = line.rstrip("\n")
+                if "ERROR" not in text:
+                    continue
+                yield LogLine(file_path=path, line_number=idx, text=text)
