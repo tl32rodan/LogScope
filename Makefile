@@ -1,5 +1,4 @@
 PYTHON ?= python3
-export PYTHONPATH := src
 
 .PHONY: run demo clean test
 

@@ -5,13 +5,13 @@ Each rule captures the log files where it appeared, alongside the first matching
 
 ## Project layout
 
-- `src/logscope/model`: Core domain models (`Rule`, `Issue`).
-- `src/logscope/config`: CSV configuration loader and schema validation.
-- `src/logscope/collector`: File discovery and log reading utilities.
-- `src/logscope/matcher`: Regex engine and filters.
-- `src/logscope/reporter`: Summary table builder and JSON export.
-- `src/logscope/app`: Pipeline runner, multi-config application runner, CLI entrypoint.
-- `src/logscope/integrations`: External adapters (e.g., filesystem-backed issue stores).
+- `logscope/model`: Core domain models (`Rule`, `Issue`).
+- `logscope/config`: CSV configuration loader and schema validation.
+- `logscope/collector`: File discovery and log reading utilities.
+- `logscope/matcher`: Regex engine and filters.
+- `logscope/reporter`: Summary table builder and JSON export.
+- `logscope/app`: Pipeline runner, multi-config application runner, CLI entrypoint.
+- `logscope/integrations`: External adapters (e.g., filesystem-backed issue stores).
 - `tests`: Unit tests for each module.
 
 ## Quickstart
@@ -32,7 +32,7 @@ Each rule captures the log files where it appeared, alongside the first matching
 3. Run the pipeline via CLI:
 
 ```bash
-PYTHONPATH=src python -m logscope analysis config.json ./issues
+python -m logscope analysis config.json ./issues
 ```
 
 ### End-to-end demo
@@ -97,5 +97,5 @@ make test  # Run the full unittest suite
 ## Testing
 
 ```bash
-PYTHONPATH=src python -m unittest discover
+python -m unittest discover
 ```
