@@ -27,7 +27,7 @@ class OutputJsonTest(unittest.TestCase):
             loaded = json.loads(nested_path.read_text())
             self.assertEqual(loaded["rules"], [])
 
-    def test_write_summary_creates_parent_directories(self):
+    def test_write_summary_creates_parent_directories_for_issues(self):
         data = {"issues": []}
         with tempfile.TemporaryDirectory() as tmpdir:
             nested_path = Path(tmpdir) / "nested" / "out.json"

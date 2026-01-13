@@ -1,7 +1,7 @@
 from typing import Dict, Iterable, List
 
-REQUIRED_FIELDS: List[str] = ["pattern", "owner", "action"]
-OPTIONAL_FIELDS: List[str] = ["description", "category"]
+REQUIRED_FIELDS: List[str] = ["pattern"]
+OPTIONAL_FIELDS: List[str] = ["owner", "action", "description", "category"]
 
 
 def validate_row(row: Dict[str, str], required_fields: Iterable[str] = REQUIRED_FIELDS) -> None:

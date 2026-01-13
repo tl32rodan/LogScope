@@ -8,8 +8,8 @@ class Rule:
     """Pattern-based rule used to identify issues in log lines."""
 
     pattern: str
-    owner: str
-    action: str
+    owner: Optional[str] = None
+    action: Optional[str] = None
     description: Optional[str] = None
     category: Optional[str] = None
 
