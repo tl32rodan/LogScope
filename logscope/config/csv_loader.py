@@ -27,8 +27,8 @@ def load_rules_from_csv(csv_path: Path) -> List[Rule]:
                 _raise_with_path(exc, csv_path)
             rule = Rule(
                 pattern=row["pattern"],
-                owner=row["owner"],
-                action=row["action"],
+                owner=_normalize_optional(row.get("owner")),
+                action=_normalize_optional(row.get("action")),
                 description=_normalize_optional(row.get("description")),
                 category=_normalize_optional(row.get("category")),
             )

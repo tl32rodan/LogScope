@@ -16,15 +16,6 @@ class CsvLoaderTest(unittest.TestCase):
             self.assertEqual(rules[0].owner, "team-a")
             self.assertEqual(rules[0].description, "Runtime error")
 
-    def test_missing_header_raises(self):
-        content = "pattern,owner\nERROR,team-a\n"
-        with tempfile.TemporaryDirectory() as tmp:
-            csv_path = Path(tmp) / "rules.csv"
-            csv_path.write_text(content, encoding="utf-8")
-            with self.assertRaises(ValueError) as context:
-                load_rules_from_csv(csv_path)
-            self.assertIn(str(csv_path), str(context.exception))
-
     def test_optional_fields_empty_become_none(self):
         content = "pattern,owner,action,description,category\nERROR,team-a,fix,   ,\n"
         with tempfile.TemporaryDirectory() as tmp:
